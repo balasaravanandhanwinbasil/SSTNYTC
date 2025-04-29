@@ -63,6 +63,18 @@ def detect_red(frame):
         return center_x, center_y, frame
     else:
         return None, None, frame
+    
+def qrCodeAlign():
+    i = 0
+    result = uapi.single_fly_recognition_Qrcode(0,0)
+    while i < 10 and result['result'] == False:
+        time.sleep(0.1)
+        i += 1
+        result = uapi.single_fly_recognition_Qrcode(mode = 0, qr_id = 0)
+
+    if result['result'] == True:
+        uapi.single_fly_straight_flight(x = result['x'], y = result['y'], z = 0)
+
 
 if not uapi.connect():
     print("no")
@@ -77,18 +89,10 @@ else:
     uapi.single_fly_forward(distance=50)
     uapi.plane_cmd_camera_angle(0,30)
 
-    i = 0
-    result = uapi.single_fly_recognition_Qrcode(0,0)
-    while i < 10 and result['result'] == False:
-        time.sleep(0.1)
-        i += 1
-        result = uapi.single_fly_recognition_Qrcode(mode = 0, qr_id = 0)
-
-    if result['result'] == True:
-        uapi.single_fly_straight_flight(x = result['x'], y = result['y'], z = 0)
+    qrCodeAlign()
 
     #DETECT BLUE BALL
-    for i in range(30):
+    for i in range(20):
         center_x, center_y, frame = detect_blue(video.get_video())
         print("DETECTING BLUE BALL...")
         cv2.imshow("Blue Detection", frame)
@@ -97,17 +101,32 @@ else:
         time.sleep(0.5)
 
     #DETECT RED BALL
-    for i in range(30):
+    for i in range(20):
         center_x, center_y, frame = detect_red(video.get_video())
         print("DETECTING RED BALL...")
         cv2.imshow("Red Detection", frame)
         cv2.waitKey(1)
         print(center_x, center_y)
-        time.sleep(0.5) 
+        time.sleep(0.5)
+    
+    #fly toward the blue ball
+    bcenter_x, bcenter_y, frame = detect_blue(video.get_video())
+    print(bcenter_x, bcenter_y)
+    uapi.single_fly_straight_flight(x = center_x, y = center_y, z = 0)
+    uapi.single_fly_foward(distance=75)
 
-    uapi.single_fly_right(distance=20)
-    uapi.single_fly_forward(distance=70)
-    uapi.single_fly_down(height = 10)
+    #go back to get the red ball
+    uapi.single_fly_back(distance=75)
+
+    #fly toward the red ball
+    rcenter_x, rcenter_y, frame = detect_red(video.get_video())
+    print(rcenter_x, rcenter_y)
+    uapi.single_fly_straight_flight(x = center_x, y = center_y, z = 0)
+    uapi.single_fly_foward(distance=75)
+
+    #uapi.single_fly_right(distance=20)
+    #uapi.single_fly_forward(distance=70)
+    #uapi.single_fly_down(height = 10)
 
     for _ in range(5):
         uapi.single_fly_forward(distance = 10)
