@@ -24,12 +24,10 @@ def blockheight():
 def detect_blue(frame):
     # Define HSV range for blue color
     frame = video.get_video()
-    Lblue= np.array([0, 100, 100])
-    Ublue = np.array([140, 255, 255])
-    
+    Lblue= np.array([30, 255, 100])
+    Ublue = np.array([30, 116, 255])
     # Convert frame to HSV color space
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    
     # Create a mask for red color
     mask_blue = cv2.inRange(hsv, Lblue, Ublue)
     
@@ -162,17 +160,18 @@ else:
 
     #move forward and measure height of first box
     groundheight = uapi.get_plane_distance()
+    frame = video.get_video()
     
 
-    uapi.Plane_cmd_camera_angle(0,-90)
+    uapi.Plane_cmd_camera_angle(2,90)
     uapi.single_fly_forward(distance=90) #adjust
-    detect_blue()
+    detect_blue(frame)
     bluealign()
     height_thread = threading.Thread(target=blockheight) 
     height_thread.start()
 
     time.sleep(0.1)
-    uapi.single_fly_forward(distance=5)
+
 
     stop_thread = True
     
@@ -180,9 +179,9 @@ else:
     time.sleep(2)
 
     #get past the 2nd block
-    uapi.single_fly_forward(distance=40)
-    detect_red()
+    detect_red(frame)
     redalign()
+    uapi.single_fly_forward(distance=40)
 
     print("PHASE 2 COMPLETE")
 
