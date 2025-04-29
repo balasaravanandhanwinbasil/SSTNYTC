@@ -23,6 +23,7 @@ def blockheight():
 
 def detect_blue(frame):
     # Define HSV range for blue color
+    frame = video.get_video()
     Lblue= np.array([0, 100, 100])
     Ublue = np.array([140, 255, 255])
     
@@ -68,6 +69,7 @@ def bluealign():
                 cv2.imshow("Detection", frame)
                 cv2.waitKey(1)
                 print(center_x, center_y)
+                print("bluealigned!")
                 time.sleep(0.1)
         time.sleep(0.1)
         uapi.single_fly_forward(50)
@@ -78,6 +80,7 @@ def bluealign():
 
 def detect_red(frame):
     # Define HSV range for red color
+    frame = video.get_video()
     Lblue = np.array([100, 150, 70])
     Ublue = np.array([140, 255, 255])
     
@@ -126,6 +129,7 @@ def redalign():
                 cv2.imshow("Detection", frame)
                 cv2.waitKey(1)
                 print(center_x, center_y)
+                print("redaligned!")
                 time.sleep(0.1)
         time.sleep(0.1)
         uapi.single_fly_forward(50)
@@ -147,7 +151,7 @@ else:
 
     uapi.single_fly_takeoff()
     i = 0
-    result = uapi.single_fly_recognition_Qrcode(0,0)
+    result = uapi.single_fly_recognition_Qrcode(1,90)
     while i < 10 and result['result'] == False:
         time.sleep(0.1)
         i += 1
@@ -159,8 +163,9 @@ else:
     #move forward and measure height of first box
     groundheight = uapi.get_plane_distance()
     
+
+    uapi.Plane_cmd_camera_angle(0,-90)
     uapi.single_fly_forward(distance=90) #adjust
-    uapi.Plane_cmd_camera_angle(0,0)
     detect_blue()
     bluealign()
     height_thread = threading.Thread(target=blockheight) 
