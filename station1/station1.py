@@ -100,6 +100,8 @@ else:
     
     uapi.single_fly_forward(distance=90) #adjust
 
+    detectblue()
+    bluealign()
     height_thread = threading.Thread(target=blockheight)
     height_thread.start()
 
