@@ -75,6 +75,7 @@ else:
     cv2.destroyAllWindows()
     video.close()
     
+    uapi.single_fly_back(distance=30)
     uapi.single_fly_up(height = 110) 
     uapi.single_fly_forward(distance=25) 
     uapi.Plane_cmd_camera_angle(2,90)
