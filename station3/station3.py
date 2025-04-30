@@ -117,6 +117,7 @@ else:
 
     #go back to get the red ball
     uapi.single_fly_back(distance=75)
+    qrCodeAlign()
 
     #fly toward the red ball
     rcenter_x, rcenter_y, frame = detect_red(video.get_video())
